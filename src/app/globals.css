@@ -1,0 +1,101 @@
+/*
+  Design tokens.
+  Deliberately plain/neutral for now — a separate design pass will
+  replace these values with the final palette/typography. Every
+  color, spacing, and radius used by components should resolve
+  through a token here, never be hard-coded inline.
+*/
+:root {
+  /* Surfaces */
+  --color-bg: #f5f4f1;
+  --color-surface: #ffffff;
+  --color-surface-raised: #fbfaf8;
+
+  /* Text */
+  --color-text: #1f1e1c;
+  --color-text-muted: #6b6459;
+
+  /* Structure */
+  --color-border: #ddd8ce;
+  --color-accent: #1f1e1c;
+  --color-accent-contrast: #ffffff;
+
+  /* Weekend status */
+  --color-status-libre: #dfe9e0;
+  --color-status-libre-border: #bcd1bf;
+  --color-status-protege: #3a5340;
+  --color-status-protege-text: #ffffff;
+  --color-status-partiel: #ece4cd;
+  --color-status-partiel-border: #d6cbac;
+  --color-status-occupe: #f1dcdc;
+  --color-status-occupe-border: #d9baba;
+
+  /* Event categories */
+  --color-cat-obligation: #8b3a3a;
+  --color-cat-prevu: #3d5a73;
+  --color-cat-envie: #b9862f;
+
+  /* Semantic */
+  --color-danger: #8b3a3a;
+  --color-danger-soft: #f1dcdc;
+  --color-danger-text: #5e2828;
+  --color-success: #3a5340;
+
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: Georgia, "Times New Roman", serif;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 9px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}
