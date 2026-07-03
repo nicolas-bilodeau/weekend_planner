@@ -87,12 +87,6 @@ export function PlannerApp() {
     return t;
   }, []);
 
-  const ratioScope = useMemo(
-    () => computed.filter((w) => yearFilter === "both" || w.year === yearFilter),
-    [computed, yearFilter]
-  );
-  const occupancy = computeOccupancy(ratioScope);
-
   const visibleWeekends = useMemo(
     () =>
       computed.filter((w) => {
@@ -102,6 +96,11 @@ export function PlannerApp() {
       }),
     [computed, yearFilter, hidePast, today]
   );
+
+  // Occupancy always mirrors what's actually on screen: same year filter and
+  // same "hide past" filter as the grid, so the ratio's denominator matches
+  // the count of cells the user can see.
+  const occupancy = computeOccupancy(visibleWeekends);
 
   const byMonth = useMemo(() => {
     const map: Record<string, { year: number; month: number; weekends: ComputedWeekend[] }> = {};
