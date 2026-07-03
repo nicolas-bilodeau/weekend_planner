@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Settings2, Trash2 } from "lucide-react";
+import { RotateCw, Settings2, Trash2 } from "lucide-react";
 import { MONTHS_FULL, formatLabel, nearestWeekend } from "@/lib/weekends";
 import type { LocationKind, RecurringRuleRow, SkippedRecurringInstanceRow, Weekend } from "@/lib/types";
 import type { NewRuleInput } from "@/hooks/usePlannerData";
@@ -54,7 +54,12 @@ export function RecurringRules({
       {rules.map((rule) => (
         <div className={styles.ruleCard} key={rule.id}>
           <div className={styles.ruleInfo}>
-            <div className={styles.ruleTitle}>{rule.title}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div className={styles.ruleTitle}>{rule.title}</div>
+              <span className={styles.ruleRefreshIcon} title="Se répète chaque année">
+                <RotateCw size={14} />
+              </span>
+            </div>
             <div className={styles.ruleMeta}>
               Cible : {rule.day} {MONTHS_FULL[rule.month - 1]} ·{" "}
               {rule.location === "ville" ? "Dans notre ville" : "À l'extérieur"}

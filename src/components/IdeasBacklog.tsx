@@ -6,7 +6,21 @@ import { formatLabel } from "@/lib/weekends";
 import { IDEA_DURATIONS, IDEA_TAGS } from "@/lib/types";
 import type { ComputedWeekend, IdeaDuration, IdeaRow, IdeaTag, LocationKind } from "@/lib/types";
 import type { NewIdeaInput } from "@/hooks/usePlannerData";
+import { EmptyState } from "./StateCards";
 import styles from "./planner.module.css";
+
+const TAG_CHIP_CLASS: Record<IdeaTag, string> = {
+  Nature: styles.chipNature,
+  Bouffe: styles.chipBouffe,
+  Voyage: styles.chipVoyage,
+  Culture: styles.chipCulture,
+  Détente: styles.chipDetente,
+};
+
+const LOCATION_CHIP_CLASS: Record<LocationKind, string> = {
+  ville: styles.chipVille,
+  exterieur: styles.chipExterieur,
+};
 
 export function IdeasBacklog({
   ideas,
@@ -95,13 +109,20 @@ export function IdeasBacklog({
         </div>
       )}
 
+      {ideas.length === 0 && (
+        <EmptyState
+          title="Le backlog est vide"
+          subtitle="Ajoute une idée pour commencer à rêver de fins de semaine."
+        />
+      )}
+
       <div className={styles.ideaGrid}>
         {ideas.map((idea) => {
           const assignedW = idea.assigned_weekend_id
             ? computed.find((w) => w.id === idea.assigned_weekend_id) ?? null
             : null;
           return (
-            <div className={styles.ideaCard} key={idea.id}>
+            <div className={`${styles.ideaCard} ${assignedW ? styles.ideaCardAssigned : ""}`} key={idea.id}>
               <button
                 className={styles.ideaDelete}
                 onClick={() => onDeleteIdea(idea.id)}
@@ -111,13 +132,15 @@ export function IdeasBacklog({
               </button>
               <div className={styles.ideaTitle}>{idea.title}</div>
               <div className={styles.ideaMetaRow}>
-                <span className={styles.chip}>
+                <span className={`${styles.chip} ${assignedW ? styles.chipOnAccent : TAG_CHIP_CLASS[idea.tag]}`}>
                   <TagIcon size={10} /> {idea.tag}
                 </span>
-                <span className={styles.chip}>
+                <span className={`${styles.chip} ${assignedW ? styles.chipOnAccent : ""}`}>
                   <Clock size={10} /> {idea.duration}
                 </span>
-                <span className={styles.chip}>
+                <span
+                  className={`${styles.chip} ${assignedW ? styles.chipOnAccent : LOCATION_CHIP_CLASS[idea.location]}`}
+                >
                   {idea.location === "ville" ? <Home size={10} /> : <MapPin size={10} />}{" "}
                   {idea.location === "ville" ? "Ville" : "Extérieur"}
                 </span>

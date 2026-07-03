@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, X } from "lucide-react";
+import { X } from "lucide-react";
 import { formatLabel, violationKey } from "@/lib/weekends";
 import type { ComputedWeekend } from "@/lib/types";
 import styles from "./planner.module.css";
@@ -16,8 +16,8 @@ export function ViolationBanner({
 
   return (
     <div className={styles.alertBanner}>
-      <AlertTriangle size={18} style={{ flexShrink: 0, marginTop: 1, color: "var(--color-danger)" }} />
-      <div>
+      <div className={styles.alertIcon}>!</div>
+      <div className={styles.alertText}>
         <b>Règle brisée :</b> {violations.length} paire{violations.length > 1 ? "s" : ""}
         {" de week-ends consécutifs à l'extérieur."}{" "}
         {violations.map(([a, b], i) => (

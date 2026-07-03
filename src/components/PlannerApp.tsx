@@ -22,6 +22,7 @@ import { WeekendDrawer } from "./WeekendDrawer";
 import { IdeaAssignDrawer } from "./IdeaAssignDrawer";
 import { IdeasBacklog } from "./IdeasBacklog";
 import { RecurringRules } from "./RecurringRules";
+import { ErrorState, LoadingState } from "./StateCards";
 import styles from "./planner.module.css";
 
 export function PlannerApp() {
@@ -29,6 +30,8 @@ export function PlannerApp() {
     loading,
     error,
     dismissError,
+    loadError,
+    retry,
     events,
     ideas,
     recurringRules,
@@ -127,7 +130,23 @@ export function PlannerApp() {
   }
 
   if (loading) {
-    return <div className={styles.centered}>Chargement du calendrier...</div>;
+    return (
+      <div className={styles.centered}>
+        <div style={{ width: "min(360px, 90vw)" }}>
+          <LoadingState />
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className={styles.centered}>
+        <div style={{ width: "min(360px, 90vw)" }}>
+          <ErrorState onRetry={retry} />
+        </div>
+      </div>
+    );
   }
 
   return (

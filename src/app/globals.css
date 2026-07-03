@@ -1,50 +1,75 @@
 /*
-  Design tokens.
-  Deliberately plain/neutral for now — a separate design pass will
-  replace these values with the final palette/typography. Every
-  color, spacing, and radius used by components should resolve
-  through a token here, never be hard-coded inline.
+  Design tokens — "Confettis" system (Passe 1 · 1a).
+  Warm cut-paper look: cream surfaces, soft rounded corners, offset
+  drop shadows, Anton display type + Archivo body + Space Mono labels.
+  Every color/spacing/radius used by components should resolve through
+  a token here — no hard-coded values in component CSS.
 */
 :root {
   /* Surfaces */
-  --color-bg: #f5f4f1;
-  --color-surface: #ffffff;
-  --color-surface-raised: #fbfaf8;
+  --color-bg: #f0eee6;
+  --color-surface: #fbf4e6;
+  --color-surface-raised: #fffdf7;
 
   /* Text */
-  --color-text: #1f1e1c;
-  --color-text-muted: #6b6459;
+  --color-text: #23201a;
+  --color-text-muted: #5b5344;
+  --color-text-faint: #a8967a;
+  --color-text-soft: #8a7b5e;
 
   /* Structure */
-  --color-border: #ddd8ce;
-  --color-accent: #1f1e1c;
-  --color-accent-contrast: #ffffff;
+  --color-border: #eadfc8;
+  --color-border-soft: #f0e7d2;
+  --color-accent: #23201a;
+  --color-accent-contrast: #fbf4e6;
 
-  /* Weekend status */
-  --color-status-libre: #dfe9e0;
-  --color-status-libre-border: #bcd1bf;
-  --color-status-protege: #3a5340;
-  --color-status-protege-text: #ffffff;
-  --color-status-partiel: #ece4cd;
-  --color-status-partiel-border: #d6cbac;
-  --color-status-occupe: #f1dcdc;
-  --color-status-occupe-border: #d9baba;
+  /* Brand */
+  --color-brand-red: #ff5a47;
+  --color-brand-red-dark: #e23c2a;
+  --color-brand-violet: #7a5cff;
+  --color-brand-violet-dark: #6244e0;
+  --color-brand-teal: #37c4d1;
+  --color-brand-yellow: #ffd24d;
+  --color-brand-pink: #ff5f9e;
+  --color-brand-green: #2fb56b;
+
+  /* Weekend status: bg / fg / border / icon */
+  --color-status-libre-bg: #cdebd0;
+  --color-status-libre-fg: #1e5e38;
+  --color-status-libre-border: #a6d6ac;
+  --color-status-libre-icon: #2e7d4e;
+
+  --color-status-protege-bg: #1e8e51;
+  --color-status-protege-fg: #ffffff;
+  --color-status-protege-border: #166b3d;
+  --color-status-protege-icon: #ffffff;
+
+  --color-status-partiel-bg: #ffb3a8;
+  --color-status-partiel-fg: #8a2a17;
+  --color-status-partiel-border: #f58e7e;
+  --color-status-partiel-icon: #b33d28;
+
+  --color-status-occupe-bg: #ff5a47;
+  --color-status-occupe-fg: #ffffff;
+  --color-status-occupe-border: #e23c2a;
+  --color-status-occupe-icon: #ffffff;
 
   /* Event categories */
-  --color-cat-obligation: #8b3a3a;
-  --color-cat-prevu: #3d5a73;
-  --color-cat-envie: #b9862f;
+  --color-cat-obligation: #23201a;
+  --color-cat-prevu: #7a5cff;
+  --color-cat-envie: #ff5f9e;
 
   /* Semantic */
-  --color-danger: #8b3a3a;
-  --color-danger-soft: #f1dcdc;
-  --color-danger-text: #5e2828;
-  --color-success: #3a5340;
+  --color-danger: #ff5a47;
+  --color-danger-soft: #ffe7d6;
+  --color-danger-border: #ff5a47;
+  --color-danger-text: #7a2a17;
+  --color-success: #1e8e51;
 
   /* Typography */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  --font-display: Georgia, "Times New Roman", serif;
+  --font-display: var(--font-anton), "Anton", sans-serif;
+  --font-sans: var(--font-archivo), "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), "Space Mono", ui-monospace, monospace;
 
   /* Spacing scale */
   --space-1: 4px;
@@ -56,10 +81,16 @@
   --space-7: 48px;
 
   /* Radius */
-  --radius-sm: 6px;
-  --radius-md: 9px;
-  --radius-lg: 12px;
+  --radius-sm: 9px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
   --radius-pill: 999px;
+
+  /* Offset "paper" shadows */
+  --shadow-card: 3px 3px 0 rgba(35, 32, 26, 0.13);
+  --shadow-card-hover: 4px 6px 0 rgba(35, 32, 26, 0.22);
+  --shadow-panel: 0 24px 50px -34px rgba(60, 45, 20, 0.4);
+  --shadow-flat: 3px 3px 0 rgba(35, 32, 26, 0.08);
 
   color-scheme: light;
 }

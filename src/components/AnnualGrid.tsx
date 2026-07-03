@@ -1,21 +1,30 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
 import { MONTHS_ABBR, formatLabel } from "@/lib/weekends";
-import type { ComputedWeekend } from "@/lib/types";
+import type { ComputedWeekend, WeekendStatus } from "@/lib/types";
+import { StatusIcon } from "./StatusIcon";
+import { CategoryDot } from "./CategoryDot";
 import styles from "./planner.module.css";
 
-const STATUS_CLASS: Record<ComputedWeekend["status"], string> = {
+const STATUS_CLASS: Record<WeekendStatus, string> = {
   libre: styles.wkCellLibre,
   protege: styles.wkCellProtege,
   partiel: styles.wkCellPartiel,
   occupe: styles.wkCellOccupe,
 };
 
-const CATEGORY_COLOR: Record<string, string> = {
-  obligation: "var(--color-cat-obligation)",
-  prevu: "var(--color-cat-prevu)",
-  envie: "var(--color-cat-envie)",
+const STATUS_SWATCH_CLASS: Record<WeekendStatus, string> = {
+  libre: styles.legendSwatchLibre,
+  protege: styles.legendSwatchProtege,
+  partiel: styles.legendSwatchPartiel,
+  occupe: styles.legendSwatchOccupe,
+};
+
+const STATUS_LABEL: Record<WeekendStatus, string> = {
+  libre: "Libre",
+  protege: "Protégé",
+  partiel: "Local seulement",
+  occupe: "À l'extérieur",
 };
 
 interface MonthGroup {
@@ -47,31 +56,13 @@ export function AnnualGrid({
     <>
       <div className={styles.controlsRow}>
         <div className={styles.legend}>
-          <div className={styles.legendItem}>
-            <span
-              className={styles.legendDot}
-              style={{ background: "var(--color-status-libre)", border: "1px solid var(--color-status-libre-border)" }}
-            />
-            Libre
-          </div>
-          <div className={styles.legendItem}>
-            <span className={styles.legendDot} style={{ background: "var(--color-status-protege)" }} />
-            Protégé
-          </div>
-          <div className={styles.legendItem}>
-            <span
-              className={styles.legendDot}
-              style={{ background: "var(--color-status-partiel)", border: "1px solid var(--color-status-partiel-border)" }}
-            />
-            Local seulement
-          </div>
-          <div className={styles.legendItem}>
-            <span
-              className={styles.legendDot}
-              style={{ background: "var(--color-status-occupe)", border: "1px solid var(--color-status-occupe-border)" }}
-            />
-            À l&apos;extérieur
-          </div>
+          {(["libre", "protege", "partiel", "occupe"] as WeekendStatus[]).map((status) => (
+            <div className={styles.legendItem} key={status}>
+              <span className={`${styles.legendSwatch} ${STATUS_SWATCH_CLASS[status]}`} />
+              <StatusIcon status={status} size={9} />
+              <span className={styles.legendLabel}>{STATUS_LABEL[status]}</span>
+            </div>
+          ))}
         </div>
         <div className={styles.viewControls}>
           <div className={styles.segmented}>
@@ -125,13 +116,9 @@ export function AnnualGrid({
                 >
                   <div className={styles.wkDate}>{formatLabel(w)}</div>
                   <div className={styles.wkDots}>
-                    {w.status === "protege" && <ShieldCheck size={12} className={styles.wkShield} />}
+                    <StatusIcon status={w.status} size={11} />
                     {w.events.map((ev) => (
-                      <span
-                        key={ev.id}
-                        className={styles.wkDot}
-                        style={{ background: CATEGORY_COLOR[ev.category] }}
-                      />
+                      <CategoryDot key={ev.id} category={ev.category} size={7} />
                     ))}
                   </div>
                 </div>

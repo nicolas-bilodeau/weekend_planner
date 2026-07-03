@@ -2,14 +2,22 @@
 
 import { X } from "lucide-react";
 import { formatLabel } from "@/lib/weekends";
-import type { ComputedWeekend } from "@/lib/types";
+import type { ComputedWeekend, WeekendStatus } from "@/lib/types";
+import { StatusIcon } from "./StatusIcon";
 import styles from "./planner.module.css";
 
-const STATUS_LABEL: Record<ComputedWeekend["status"], string> = {
+const STATUS_LABEL: Record<WeekendStatus, string> = {
   libre: "Libre",
   protege: "Protégé",
   partiel: "Local seulement",
   occupe: "À l'extérieur",
+};
+
+const STATUS_PILL_CLASS: Record<WeekendStatus, string> = {
+  libre: styles.statusPillLibre,
+  protege: styles.statusPillProtege,
+  partiel: styles.statusPillPartiel,
+  occupe: styles.statusPillOccupe,
 };
 
 export function IdeaAssignDrawer({
@@ -37,7 +45,11 @@ export function IdeaAssignDrawer({
               <span style={{ fontFamily: "var(--font-mono)" }}>
                 {formatLabel(w)} &apos;{String(w.year).slice(2)}
               </span>
-              <span className={styles.statusPill} style={{ margin: 0 }}>
+              <span
+                className={`${styles.statusPill} ${STATUS_PILL_CLASS[w.status]}`}
+                style={{ margin: 0 }}
+              >
+                <StatusIcon status={w.status} size={9} color="currentColor" />
                 {STATUS_LABEL[w.status]}
               </span>
             </div>

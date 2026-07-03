@@ -14,25 +14,25 @@ import {
 } from "lucide-react";
 import { formatLabel, isoDate } from "@/lib/weekends";
 import { CATEGORY_LABEL } from "@/lib/types";
-import type { ComputedWeekend, EventCategory, IdeaRow, LocationKind, PlannerEvent } from "@/lib/types";
+import type { ComputedWeekend, EventCategory, IdeaRow, LocationKind, PlannerEvent, WeekendStatus } from "@/lib/types";
 import type { NewEventInput } from "@/hooks/usePlannerData";
+import { StatusIcon } from "./StatusIcon";
+import { CategoryDot } from "./CategoryDot";
+import { EmptyState } from "./StateCards";
 import styles from "./planner.module.css";
 
-const CATEGORY_COLOR: Record<EventCategory, string> = {
-  obligation: "var(--color-cat-obligation)",
-  prevu: "var(--color-cat-prevu)",
-  envie: "var(--color-cat-envie)",
-};
-
-const STATUS_LABEL: Record<ComputedWeekend["status"], React.ReactNode> = {
+const STATUS_LABEL: Record<WeekendStatus, string> = {
   libre: "Libre",
-  protege: (
-    <>
-      <ShieldCheck size={13} /> Protégé
-    </>
-  ),
+  protege: "Protégé",
   partiel: "Local seulement",
   occupe: "À l'extérieur",
+};
+
+const STATUS_PILL_CLASS: Record<WeekendStatus, string> = {
+  libre: styles.statusPillLibre,
+  protege: styles.statusPillProtege,
+  partiel: styles.statusPillPartiel,
+  occupe: styles.statusPillOccupe,
 };
 
 export function WeekendDrawer({
@@ -86,7 +86,10 @@ export function WeekendDrawer({
             <X size={20} />
           </button>
         </div>
-        <div className={styles.statusPill}>{STATUS_LABEL[selected.status]}</div>
+        <div className={`${styles.statusPill} ${STATUS_PILL_CLASS[selected.status]}`}>
+          <StatusIcon status={selected.status} size={10} color="currentColor" />
+          {STATUS_LABEL[selected.status]}
+        </div>
 
         {isPartOfViolation && (
           <div className={styles.warnNote}>
@@ -97,13 +100,11 @@ export function WeekendDrawer({
 
         <div className={styles.sectionLabel}>Ce qui est prévu</div>
         {selected.events.length === 0 && (
-          <div style={{ fontSize: 13.5, color: "var(--color-text-muted)" }}>
-            Rien de prévu pour l&apos;instant.
-          </div>
+          <EmptyState title="Le week-end est à vous" subtitle="Rien de prévu — profitez-en." />
         )}
         {selected.events.map((ev) => (
           <div className={styles.eventRow} key={ev.id}>
-            <span className={styles.catDot} style={{ background: CATEGORY_COLOR[ev.category] }} />
+            <CategoryDot category={ev.category} size={11} />
             <span className={styles.eventTitle}>
               {ev.title}
               {ev.recurringRuleId && (

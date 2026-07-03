@@ -55,6 +55,8 @@ export function usePlannerData() {
   const supabase = useMemo(() => createClient(), []);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [retryToken, setRetryToken] = useState(0);
   const [events, setEvents] = useState<EventRow[]>([]);
   const [ideas, setIdeas] = useState<IdeaRow[]>([]);
   const [recurringRules, setRecurringRules] = useState<RecurringRuleRow[]>([]);
@@ -67,6 +69,7 @@ export function usePlannerData() {
 
     async function load() {
       setLoading(true);
+      setLoadError(null);
       const [
         { data: userData },
         eventsRes,
@@ -89,7 +92,7 @@ export function usePlannerData() {
       const firstError =
         eventsRes.error || ideasRes.error || rulesRes.error || protectedRes.error || skippedRes.error;
       if (firstError) {
-        setError(firstError.message);
+        setLoadError(firstError.message);
         setLoading(false);
         return;
       }
@@ -181,7 +184,9 @@ export function usePlannerData() {
       cancelled = true;
       supabase.removeChannel(channel);
     };
-  }, [supabase]);
+  }, [supabase, retryToken]);
+
+  const retry = useCallback(() => setRetryToken((t) => t + 1), []);
 
   const addEvent = useCallback(
     async (input: NewEventInput) => {
@@ -331,6 +336,8 @@ export function usePlannerData() {
     loading,
     error,
     dismissError: () => setError(null),
+    loadError,
+    retry,
     events,
     ideas,
     recurringRules,

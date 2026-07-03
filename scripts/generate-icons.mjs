@@ -68,8 +68,8 @@ function makeIconPng(size, bg, fg) {
   ]);
 }
 
-const BG = [31, 30, 28]; // --color-accent
-const FG = [245, 244, 241]; // --color-bg
+const BG = [255, 90, 71]; // --color-brand-red
+const FG = [251, 244, 230]; // --color-surface (cream)
 
 const targets = [
   ["public/icons/icon-192.png", 192],

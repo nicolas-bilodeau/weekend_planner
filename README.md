@@ -23,7 +23,7 @@ supabase/migrations/0001_init.sql   schéma complet + RLS + realtime
 scripts/generate-icons.mjs          régénère les icônes PWA placeholder
 ```
 
-Le style visuel est volontairement neutre : toutes les couleurs/espacements passent par les tokens CSS définis dans `src/app/globals.css` (`--color-*`, `--space-*`, `--radius-*`, `--font-*`). La passe de design pourra remplacer ces valeurs sans toucher aux composants.
+Le design system implémenté est **"Confettis"** (direction 1a retenue lors de la passe 1) : fond crème, cases en "papier découpé" aux coins arrondis avec ombre décalée, Anton (titres) + Archivo (texte) + Space Mono (labels/mono). Toutes les couleurs/espacements passent par les tokens CSS définis dans `src/app/globals.css` (`--color-*`, `--space-*`, `--radius-*`, `--font-*`, `--shadow-*`) — un futur remaniement visuel n'a qu'à changer ces valeurs, pas les composants. Les icônes de statut (libre = anneau, protégé = bouclier, local = triangle, extérieur = losange) et les puces de catégorie (obligation = carré, prévu = cercle, envie = triangle) sont des composants dédiés (`StatusIcon`, `CategoryDot`) qui reproduisent exactement les formes du système de design.
 
 ## 1. Créer le projet Supabase
 
@@ -77,4 +77,4 @@ Toute la logique (statuts de fin de semaine, détection de violation, générati
 
 ## Hors scope (cette version)
 
-Style visuel avancé, import Google Calendar, notifications, historique/statistiques, multi-couples.
+Import Google Calendar, notifications, historique/statistiques, multi-couples.
