@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import type {
+  DismissedViolationRow,
   EventCategory,
   EventRow,
   IdeaDuration,
@@ -62,6 +63,7 @@ export function usePlannerData() {
   const [recurringRules, setRecurringRules] = useState<RecurringRuleRow[]>([]);
   const [protectedWeekends, setProtectedWeekends] = useState<ProtectedWeekendRow[]>([]);
   const [skippedInstances, setSkippedInstances] = useState<SkippedRecurringInstanceRow[]>([]);
+  const [dismissedViolations, setDismissedViolations] = useState<DismissedViolationRow[]>([]);
   const userIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -77,6 +79,7 @@ export function usePlannerData() {
         rulesRes,
         protectedRes,
         skippedRes,
+        dismissedRes,
       ] = await Promise.all([
         supabase.auth.getUser(),
         supabase.from("events").select("*"),
@@ -84,13 +87,19 @@ export function usePlannerData() {
         supabase.from("recurring_rules").select("*"),
         supabase.from("protected_weekends").select("*"),
         supabase.from("skipped_recurring_instances").select("*"),
+        supabase.from("dismissed_violations").select("*"),
       ]);
       if (cancelled) return;
 
       userIdRef.current = userData.user?.id ?? null;
 
       const firstError =
-        eventsRes.error || ideasRes.error || rulesRes.error || protectedRes.error || skippedRes.error;
+        eventsRes.error ||
+        ideasRes.error ||
+        rulesRes.error ||
+        protectedRes.error ||
+        skippedRes.error ||
+        dismissedRes.error;
       if (firstError) {
         setLoadError(firstError.message);
         setLoading(false);
@@ -102,6 +111,7 @@ export function usePlannerData() {
       setRecurringRules((rulesRes.data as RecurringRuleRow[]) ?? []);
       setProtectedWeekends((protectedRes.data as ProtectedWeekendRow[]) ?? []);
       setSkippedInstances((skippedRes.data as SkippedRecurringInstanceRow[]) ?? []);
+      setDismissedViolations((dismissedRes.data as DismissedViolationRow[]) ?? []);
       setLoading(false);
     }
 
@@ -174,6 +184,23 @@ export function usePlannerData() {
             const row = payload.new as SkippedRecurringInstanceRow;
             setSkippedInstances((rows) =>
               upsertBy(rows, row, (r) => r.recurring_rule_id === row.recurring_rule_id && r.year === row.year)
+            );
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dismissed_violations" },
+        (payload: RealtimePostgresChangesPayload<DismissedViolationRow>) => {
+          if (payload.eventType === "DELETE") {
+            const old = payload.old as Partial<DismissedViolationRow>;
+            setDismissedViolations((rows) =>
+              removeBy(rows, (r) => r.weekend_a_id === old.weekend_a_id && r.weekend_b_id === old.weekend_b_id)
+            );
+          } else {
+            const row = payload.new as DismissedViolationRow;
+            setDismissedViolations((rows) =>
+              upsertBy(rows, row, (r) => r.weekend_a_id === row.weekend_a_id && r.weekend_b_id === row.weekend_b_id)
             );
           }
         }
@@ -332,6 +359,19 @@ export function usePlannerData() {
     [supabase]
   );
 
+  const dismissViolation = useCallback(
+    async (weekendAId: string, weekendBId: string) => {
+      const { error: err } = await supabase
+        .from("dismissed_violations")
+        .upsert(
+          { weekend_a_id: weekendAId, weekend_b_id: weekendBId, dismissed_by: userIdRef.current },
+          { onConflict: "weekend_a_id,weekend_b_id" }
+        );
+      if (err) setError(err.message);
+    },
+    [supabase]
+  );
+
   return {
     loading,
     error,
@@ -343,6 +383,7 @@ export function usePlannerData() {
     recurringRules,
     protectedWeekends,
     skippedInstances,
+    dismissedViolations,
     actions: {
       addEvent,
       removeEvent,
@@ -353,6 +394,7 @@ export function usePlannerData() {
       unassignIdea,
       submitNewRule,
       deleteRule,
+      dismissViolation,
     },
   };
 }

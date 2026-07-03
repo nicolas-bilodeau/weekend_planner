@@ -72,6 +72,13 @@ export interface SkippedRecurringInstanceRow {
   year: number;
 }
 
+export interface DismissedViolationRow {
+  weekend_a_id: string;
+  weekend_b_id: string;
+  dismissed_by: string | null;
+  dismissed_at: string;
+}
+
 /** Unified event shape used by the planning logic (real DB rows + generated recurring instances). */
 export interface PlannerEvent {
   id: string;

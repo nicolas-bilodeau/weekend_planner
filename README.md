@@ -20,6 +20,7 @@ src/
     supabase/            clients Supabase (browser/server/proxy) + contexte auth
   proxy.ts               proxy Next.js 16 (anciennement middleware) : protège les routes
 supabase/migrations/0001_init.sql   schéma complet + RLS + realtime
+supabase/migrations/0002_dismissed_violations.sql   masquage persistant de l'alerte de règle brisée, par paire
 scripts/generate-icons.mjs          régénère les icônes PWA placeholder
 ```
 
@@ -28,7 +29,7 @@ Le design system implémenté est **"Confettis"** (direction 1a retenue lors de 
 ## 1. Créer le projet Supabase
 
 1. Va sur [supabase.com](https://supabase.com) et crée un nouveau projet.
-2. Dans **SQL Editor**, colle le contenu de `supabase/migrations/0001_init.sql` et exécute-le. Ça crée les tables (`events`, `ideas`, `recurring_rules`, `protected_weekends`, `skipped_recurring_instances`), les policies RLS (accès partagé entre les deux comptes) et active Realtime sur ces tables.
+2. Dans **SQL Editor**, exécute dans l'ordre `supabase/migrations/0001_init.sql` puis `0002_dismissed_violations.sql`. Ça crée les tables (`events`, `ideas`, `recurring_rules`, `protected_weekends`, `skipped_recurring_instances`, `dismissed_violations`), les policies RLS (accès partagé entre les deux comptes) et active Realtime sur ces tables.
 3. Dans **Authentication → Providers**, assure-toi qu'Email est activé. Désactive les inscriptions publiques si tu veux garder l'app fermée aux deux comptes seulement (**Authentication → Settings → Allow new users to sign up** → off).
 4. Dans **Authentication → Users**, crée manuellement les deux comptes du couple (email + mot de passe). C'est volontairement à deux comptes fixes, pas d'inscription libre.
 5. Récupère l'URL du projet et la clé `anon public` dans **Project Settings → API**.

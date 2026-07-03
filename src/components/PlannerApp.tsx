@@ -37,13 +37,13 @@ export function PlannerApp() {
     recurringRules,
     protectedWeekends,
     skippedInstances,
+    dismissedViolations,
     actions,
   } = usePlannerData();
 
   const [tab, setTab] = useState<Tab>("grid");
   const [yearFilter, setYearFilter] = useState<"both" | number>("both");
   const [hidePast, setHidePast] = useState(true);
-  const [dismissedViolations, setDismissedViolations] = useState<Set<string>>(new Set());
   const [selectedWeekendId, setSelectedWeekendId] = useState<string | null>(null);
   const [assigningIdeaId, setAssigningIdeaId] = useState<string | null>(null);
 
@@ -75,7 +75,11 @@ export function PlannerApp() {
   }, [years, weekendsByYear, allEvents, protectedIds]);
 
   const violations = useMemo(() => findViolations(computed), [computed]);
-  const visibleViolations = violations.filter(([a, b]) => !dismissedViolations.has(violationKey(a, b)));
+  const dismissedKeys = useMemo(
+    () => new Set(dismissedViolations.map((d) => d.weekend_a_id + "_" + d.weekend_b_id)),
+    [dismissedViolations]
+  );
+  const visibleViolations = violations.filter(([a, b]) => !dismissedKeys.has(violationKey(a, b)));
 
   const today = useMemo(() => {
     const t = new Date();
@@ -122,11 +126,7 @@ export function PlannerApp() {
   );
 
   function dismissAllVisible() {
-    setDismissedViolations((prev) => {
-      const next = new Set(prev);
-      visibleViolations.forEach(([a, b]) => next.add(violationKey(a, b)));
-      return next;
-    });
+    visibleViolations.forEach(([a, b]) => actions.dismissViolation(a.id, b.id));
   }
 
   if (loading) {
